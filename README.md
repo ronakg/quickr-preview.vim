@@ -1,2 +1,3 @@
-# quickr-preview
-Quickly preview Quickfix results in vim without opening the file
+# quickr-preview.vim
+
+WORK IN PROGRESS
