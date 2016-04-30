@@ -16,7 +16,7 @@ function! QFList(linenr)
         execute 'pedit +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
 
         " Jump to preview window
-        wincmd P
+        wincmd p
         execute 'normal zz'
         setlocal number
         setlocal relativenumber
@@ -32,8 +32,18 @@ function! QFList(linenr)
         
         " Go back to quickfix window
         wincmd p
-        execute 'normal \<C-w>p'
     endif
+endfunction
+" }}
+
+" HandleEnterQuickfix() {{
+"
+" When Enter is pressed, add the result buffer to s:buflist
+" and close the preview window
+function! HandleEnterQuickfix(linenr)
+    let l:entry = s:qflist[a:linenr - 1]
+    call add(s:buflist, l:entry.bufnr)
+    pclose
 endfunction
 " }}
 
@@ -68,7 +78,7 @@ if g:quickr_preview_keymaps
     nmap <leader><space> <plug>(quickr_preview)
 endif
 
-nnoremap <buffer> <cr> :pclose<CR><CR>
+nnoremap <buffer> <cr> :call HandleEnterQuickfix(line("."))<CR><CR>
 " }}
 
 call GenerateBufferList()
