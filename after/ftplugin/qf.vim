@@ -1,11 +1,10 @@
-" Easier previewing results from quickfix list
+" quick-preview.vim:  Quickly preview quickfix results without opening files
+" Maintainer:         Ronak Gandhi <https://github.com/ronakg>
+" Version:            1.0
+" Website:            https://github.com/ronakg/quickr-preview.vim
+
+" QFList() {{
 "
-" WORK IN PROGRESS
-
-let s:buflist = []
-let s:qflist = getqflist()
-
-"""
 " Operate on an entry in quickfix list
 "       linenr is current line number in the quickfix window
 "
@@ -36,20 +35,40 @@ function! QFList(linenr)
         execute 'normal \<C-w>p'
     endif
 endfunction
+" }}
 
-"""
+" GenerateBufferList() {{
+"
 " Generate list of buffers
 " Append already listed buffer to s:buflist
 "
 function! GenerateBufferList()
+    let s:buflist = []
+    let s:qflist = getqflist()
+
     for bufnum in range(1, bufnr('$'))
         if buflisted(bufnum)
             call add(s:buflist, bufnum)
         endif
     endfor
 endfunction
+" }}
 
-nnoremap <buffer> <leader><space> :call QFList(line("."))<CR>
+" Options {{
+if !exists("g:quickr_preview_keymaps")
+    let g:quickr_preview_keymaps = 1
+endif
+
+" Setup <plug> {{
+nnoremap <silent> <buffer> <plug>(quickr_preview) :call QFList(line("."))<CR>
+" }}
+
+" Default key maps {{
+if g:quickr_preview_keymaps
+    nmap <leader><space> <plug>(quickr_preview)
+endif
+
 nnoremap <buffer> <cr> :pclose<CR><CR>
+" }}
 
 call GenerateBufferList()
