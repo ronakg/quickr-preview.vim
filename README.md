@@ -6,6 +6,10 @@ in detail. This spoils the buffer list. `quickr-preview.vim` lets you preview
 the result in detail without spoiling the buffer list. Everything is
 automatically clened up once quickfix window is closed.
 
+## Demo
+
+[![asciicast](https://asciinema.org/a/4jl7wqljn2rn5sjloicmtjp1d.png)](https://asciinema.org/a/4jl7wqljn2rn5sjloicmtjp1d)
+
 ## Installation
 
 This plugin follows the standard runtime path structure, and as such it can be
