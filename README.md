@@ -60,7 +60,7 @@ nmap <leader>p <plug>(quickr_preview)
 
 ## FAQ
 
-**Nothing happens when I press `<leader><space>` in quickfix windwo.**
+**Nothing happens when I press `<leader><space>` in quickfix window.**
 
 Make sure `<leader><space>` is not defined to something else by invoking `:verbose map <leader><space>`.
 
