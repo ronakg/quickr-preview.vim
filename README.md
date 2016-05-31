@@ -47,7 +47,7 @@ let g:quickr_preview_keymaps = 0
 
 ### Define custom key mappings
 
-Use following `<plug>` to preview quickfix results:
+##### Use following `<plug>` to preview quickfix results:
 
 ```vim
 <plug>(quickr_preview)
@@ -59,7 +59,7 @@ For example:
 nmap <leader>p <plug>(quickr_preview)
 ```
 
-Use following `<plug>` to quickly close the quickfix window (and in turn preview window) from anywhere:
+##### Use following `<plug>` to quickly close the quickfix window (and in turn preview window) from anywhere:
 
 ```vim
 <plug>(quickr_preview_qf_close)
