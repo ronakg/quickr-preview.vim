@@ -33,6 +33,7 @@ installed with a variety of plugin managers:
 <leader><space> : Preview the quickfix result in a preview window
 <enter>         : Open the quickfix result in a new buffer like usual
 ```
+P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>` key is mapped to something else.
 
 ## Customization
 
