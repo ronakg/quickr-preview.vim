@@ -8,7 +8,7 @@ automatically clened up once quickfix window is closed.
 
 ## Demo
 
-[![asciicast](https://asciinema.org/a/4jl7wqljn2rn5sjloicmtjp1d.png)](https://asciinema.org/a/4jl7wqljn2rn5sjloicmtjp1d)
+[![asciicast](https://asciinema.org/a/47400.png)](https://asciinema.org/a/47400)
 
 ## Installation
 
