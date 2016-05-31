@@ -6,11 +6,11 @@ in detail. This spoils the buffer list. `quickr-preview.vim` lets you preview
 the result in detail without spoiling the buffer list. Everything is
 automatically clened up once quickfix window is closed.
 
-## Demo
+### Demo
 
 [![asciicast](https://asciinema.org/a/47400.png)](https://asciinema.org/a/47400)
 
-## Installation
+### Installation
 
 This plugin follows the standard runtime path structure, and as such it can be
 installed with a variety of plugin managers:
@@ -26,8 +26,7 @@ installed with a variety of plugin managers:
 *  Manual
   - copy all of the files into your `~/.vim` directory
 
-
-## Default Key maps
+### Default Key maps
 
 ```vim
 <leader><space> : Preview the quickfix result in a preview window
@@ -35,9 +34,9 @@ installed with a variety of plugin managers:
 ```
 P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>` key is mapped to something else.
 
-## Customization
+### Customization
 
-### Disable default key mappings
+#### Disable default key mappings
 If you want to use your own key mappings, you can disable the default key
 mappings by adding following to your `~/.vimrc` file.
 
@@ -45,7 +44,7 @@ mappings by adding following to your `~/.vimrc` file.
 let g:quickr_preview_keymaps = 0
 ```
 
-### Define custom key mappings
+#### Define custom key mappings
 
 ##### Use following `<plug>` to preview quickfix results:
 
@@ -71,12 +70,12 @@ For example:
 nmap <leader>q <plug>(quickr_preview_qf_close)
 ```
 
-## FAQ
+### FAQ
 
 **Nothing happens when I press `<leader><space>` in quickfix window.**
 
 Make sure `<leader><space>` is not defined to something else by invoking `:verbose map <leader><space>`.
 
-## License
+### License
 Copyright (c) Ronak Gandhi. Distributed under the same terms as Vim itself. See
 `:help license`
