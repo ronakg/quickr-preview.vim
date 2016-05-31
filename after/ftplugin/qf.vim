@@ -19,7 +19,6 @@ function! QFList(linenr)
         wincmd p
         execute 'normal zz'
         setlocal number
-        setlocal relativenumber
 
         " Don't mark the buffer unlisted etc. if it existed before quickfix
         " was populated
@@ -27,9 +26,11 @@ function! QFList(linenr)
             setlocal nobuflisted
             setlocal noswapfile
             setlocal readonly
-            setlocal cursorline
         endif
         
+        highlight QuickrPreview ctermbg=darkgray ctermfg=yellow cterm=italic
+        execute 'match QuickrPreview /\%'. l:entry.lnum .'l/'
+
         " Go back to quickfix window
         wincmd p
     endif
