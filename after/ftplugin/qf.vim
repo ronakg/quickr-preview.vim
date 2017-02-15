@@ -33,6 +33,7 @@ function! QFList(linenr)
 
         " Go back to quickfix window
         wincmd p
+        exec "normal "a:linenr."G"
     endif
 endfunction
 " }}
@@ -77,6 +78,7 @@ nnoremap <silent> <buffer> <plug>(quickr_preview) :call QFList(line("."))<CR>
 " Default key maps {{
 if g:quickr_preview_keymaps
     nmap <leader><space> <plug>(quickr_preview)
+    nmap <space> <plug>(quickr_preview)
 endif
 
 nnoremap <buffer> <cr> :call HandleEnterQuickfix(line("."))<CR><CR>
