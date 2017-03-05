@@ -27,7 +27,7 @@ function! QFList(linenr)
             setlocal noswapfile
             setlocal readonly
         endif
-        
+
         highlight QuickrPreview ctermbg=darkgray ctermfg=yellow cterm=italic
         execute 'match QuickrPreview /\%'. l:entry.lnum .'l/'
 
