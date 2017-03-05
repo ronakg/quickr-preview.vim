@@ -57,6 +57,10 @@ function! GenerateBufferList()
     let s:buflist = []
     let s:qflist = getqflist()
 
+    if len(s:qflist) == 0
+        let s:qflist = getloclist(0)
+    fi
+
     for bufnum in range(1, bufnr('$'))
         if buflisted(bufnum)
             call add(s:buflist, bufnum)
