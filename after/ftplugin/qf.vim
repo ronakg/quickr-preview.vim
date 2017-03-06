@@ -27,7 +27,7 @@ function! QFList(linenr)
             setlocal noswapfile
             setlocal readonly
         endif
-        
+
         highlight QuickrPreview ctermbg=darkgray ctermfg=yellow cterm=italic
         execute 'match QuickrPreview /\%'. l:entry.lnum .'l/'
 
@@ -56,6 +56,10 @@ endfunction
 function! GenerateBufferList()
     let s:buflist = []
     let s:qflist = getqflist()
+
+    if len(s:qflist) == 0
+        let s:qflist = getloclist(0)
+    fi
 
     for bufnum in range(1, bufnr('$'))
         if buflisted(bufnum)
