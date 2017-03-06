@@ -59,7 +59,7 @@ function! GenerateBufferList()
 
     if len(s:qflist) == 0
         let s:qflist = getloclist(0)
-    fi
+    endif
 
     for bufnum in range(1, bufnr('$'))
         if buflisted(bufnum)
