@@ -23,9 +23,10 @@ function! QFList(linenr)
         " Don't mark the buffer unlisted etc. if it existed before quickfix
         " was populated
         if index(s:buflist, l:entry.bufnr) == -1
-            setlocal nobuflisted
-            setlocal noswapfile
-            setlocal readonly
+            setlocal nobuflisted        " don't list this buffer
+            setlocal noswapfile         " don't create swap file for this buffer
+            setlocal readonly           " make this buffer readonly
+            setlocal nofoldenable       " disable folding
         endif
 
         highlight QuickrPreview ctermbg=darkgray ctermfg=yellow cterm=italic
