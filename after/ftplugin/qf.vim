@@ -17,7 +17,6 @@ function! QFList(linenr)
 
         " Jump to preview window
         wincmd p
-        execute 'normal zz'
         setlocal number
 
         " Don't mark the buffer unlisted etc. if it existed before quickfix
