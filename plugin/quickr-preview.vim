@@ -16,9 +16,14 @@ if !exists("g:quickr_preview_keymaps")
 endif
 " }}
 
+function! QuickrFixExit()
+    pclose!
+    execute 'sign unplace 26'
+endfunction
+
 function! QuickFixPClose()
     if &buftype == 'quickfix'
-        autocmd BufDelete <buffer> pclose!
+        autocmd BufDelete <buffer> call QuickrFixExit()
     endif
 endfunction
 

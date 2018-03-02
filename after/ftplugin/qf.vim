@@ -18,6 +18,7 @@ function! QFList(linenr)
         " Jump to preview window
         wincmd p
         setlocal number
+        setlocal norelativenumber
 
         " Don't mark the buffer unlisted etc. if it existed before quickfix
         " was populated
@@ -28,8 +29,10 @@ function! QFList(linenr)
             setlocal nofoldenable       " disable folding
         endif
 
-        highlight QuickrPreview ctermbg=darkgray ctermfg=yellow cterm=italic
-        execute 'match QuickrPreview /\%'. l:entry.lnum .'l/'
+        " Define a new sign for highlighting the line
+        sign define QuickrPreviewLine text=>> linehl=Search texthl=ErrorMsg
+        execute 'sign unplace 26'
+        execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
 
         " Go back to quickfix window
         wincmd p
