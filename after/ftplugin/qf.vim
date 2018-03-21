@@ -66,11 +66,11 @@ endfunction
 "
 function! GenerateBufferList()
     let s:buflist = []
-    let b:qflist = getqflist()
+    let b:qflist = getloclist(0)
     let b:qflen = len(b:qflist)
 
     if b:qflen == 0
-        let b:qflist = getloclist(0)
+        let b:qflist = getqflist()
         let b:qflen = len(b:qflist)
     endif
 
