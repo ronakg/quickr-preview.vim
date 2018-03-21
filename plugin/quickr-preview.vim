@@ -21,15 +21,9 @@ function! QuickrFixExit()
     execute 'sign unplace 26'
 endfunction
 
-function! QuickFixPClose()
-    if &buftype == 'quickfix'
-        autocmd BufDelete <buffer> call QuickrFixExit()
-    endif
-endfunction
-
 augroup quickfix_cmds
     autocmd!
-    autocmd BufCreate * call QuickFixPClose()
+    autocmd FileType qf autocmd BufDelete <buffer> call QuickrFixExit()
 augroup END
 
 nnoremap <silent> <plug>(quickr_preview_qf_close) :cclose<CR>

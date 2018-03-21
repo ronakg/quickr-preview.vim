@@ -1,10 +1,10 @@
 # quickr-preview.vim
 
-Quickly preview quickfix results in vim without opening the file. Usually when
-one is browsing quickfix results, the file needs to be opened to see the result
-in detail. This spoils the buffer list. `quickr-preview.vim` lets you preview
-the result in detail without spoiling the buffer list. Everything is
-automatically clened up once quickfix window is closed.
+Quickly preview quickfix and location results in vim without opening the file. Usually when
+one is browsing quickfix or location results, the file needs to be opened to see the result
+in detail. This spoils the buffer list. `quickr-preview.vim` lets you preview the result in
+detail without spoiling the buffer list. Everything is automatically cleaned up once quickfix
+and/or location windows are closed.
 
 ### Demo
 
@@ -29,10 +29,12 @@ installed with a variety of plugin managers:
 ### Default Key maps
 
 ```vim
-<leader><space> : Preview the quickfix result in a preview window
-<enter>         : Open the quickfix result in a new buffer like usual
+<leader><space> : Preview the quickfix/location result in a preview window
+<enter>         : Open the quickfix/location result in a new buffer like usual
 ```
-P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>` key is mapped to something else.
+P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>`
+key is mapped to something else. Note that pressing `<leader><space>` multiple times on
+the same qiuckfix/location result will toggle the preview window.
 
 ### Customization
 
@@ -46,7 +48,7 @@ let g:quickr_preview_keymaps = 0
 
 #### Define custom key mappings
 
-##### Use following `<plug>` to preview quickfix results:
+##### Use following `<plug>` to preview quickfix/location results:
 
 ```vim
 <plug>(quickr_preview)
@@ -58,7 +60,7 @@ For example:
 nmap <leader>p <plug>(quickr_preview)
 ```
 
-##### Use following `<plug>` to quickly close the quickfix window (and in turn preview window) from anywhere:
+##### Use following `<plug>` to quickly close the quickfix/location window (and in turn preview window) from anywhere:
 
 ```vim
 <plug>(quickr_preview_qf_close)
@@ -72,7 +74,7 @@ nmap <leader>q <plug>(quickr_preview_qf_close)
 
 ### FAQ
 
-**Nothing happens when I press `<leader><space>` in quickfix window.**
+**Nothing happens when I press `<leader><space>` in quickfix/location window.**
 
 Make sure `<leader><space>` is not defined to something else by invoking `:verbose map <leader><space>`.
 

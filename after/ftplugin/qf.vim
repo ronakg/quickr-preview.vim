@@ -9,8 +9,19 @@
 "       linenr is current line number in the quickfix window
 "
 function! QFList(linenr)
-    let l:entry = s:qflist[a:linenr - 1]
+    if b:qflen == 0
+        return
+    endif
+
     pclose
+
+    if a:linenr == b:prvlinenr
+        let b:prvlinenr = 0
+        return
+    endif
+
+    let b:prvlinenr = a:linenr
+    let l:entry = b:qflist[a:linenr - 1]
 
     if l:entry.valid
         execute 'pedit +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
@@ -45,7 +56,11 @@ endfunction
 " When Enter is pressed, add the result buffer to s:buflist
 " and close the preview window
 function! HandleEnterQuickfix(linenr)
-    let l:entry = s:qflist[a:linenr - 1]
+    if b:qflen == 0
+        return
+    endif
+
+    let l:entry = b:qflist[a:linenr - 1]
     call add(s:buflist, l:entry.bufnr)
     pclose
 endfunction
@@ -58,10 +73,13 @@ endfunction
 "
 function! GenerateBufferList()
     let s:buflist = []
-    let s:qflist = getqflist()
+    let b:prvlinenr = 0
+    let b:qflist = getloclist(0)
+    let b:qflen = len(b:qflist)
 
-    if len(s:qflist) == 0
-        let s:qflist = getloclist(0)
+    if b:qflen == 0
+        let b:qflist = getqflist()
+        let b:qflen = len(b:qflist)
     endif
 
     for bufnum in range(1, bufnr('$'))
