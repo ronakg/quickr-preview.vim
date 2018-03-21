@@ -32,7 +32,9 @@ installed with a variety of plugin managers:
 <leader><space> : Preview the quickfix/location result in a preview window
 <enter>         : Open the quickfix/location result in a new buffer like usual
 ```
-P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>` key is mapped to something else.
+P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>`
+key is mapped to something else. Note that pressing `<leader><space>` multiple times on
+the same qiuckfix/location result will toggle the preview window.
 
 ### Customization
 

@@ -13,8 +13,15 @@ function! QFList(linenr)
         return
     endif
 
-    let l:entry = b:qflist[a:linenr - 1]
     pclose
+
+    if a:linenr == b:prvlinenr
+        let b:prvlinenr = 0
+        return
+    endif
+
+    let b:prvlinenr = a:linenr
+    let l:entry = b:qflist[a:linenr - 1]
 
     if l:entry.valid
         execute 'pedit +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
@@ -66,6 +73,7 @@ endfunction
 "
 function! GenerateBufferList()
     let s:buflist = []
+    let b:prvlinenr = 0
     let b:qflist = getloclist(0)
     let b:qflen = len(b:qflist)
 
