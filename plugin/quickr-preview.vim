@@ -31,3 +31,6 @@ nnoremap <silent> <plug>(quickr_preview_qf_close) :cclose<CR>
 if g:quickr_preview_keymaps
     nmap <leader>q <plug>(quickr_preview_qf_close)
 endif
+
+" Define a new sign for highlighting the current line in the preview window
+sign define QuickrPreviewLine text=>> linehl=Search texthl=ErrorMsg
