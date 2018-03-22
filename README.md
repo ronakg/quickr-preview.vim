@@ -72,6 +72,30 @@ For example:
 nmap <leader>q <plug>(quickr_preview_qf_close)
 ```
 
+#### Configuring the preview window sign column
+The symbol used in the sign column within the preview window can be disabled by
+adding the following to your `~/.vimrc` file.
+
+```vim
+let g:quickr_preview_sign_enable = 0
+```
+
+The symbol and highlight group used for the sign column within the preview window
+can be changed by adding the following to your `~/.vimrc` file.
+
+```vim
+let g:quickr_preview_sign_symbol = ">>"
+let g:quickr_preview_sign_hl = "SignColumn"
+```
+
+#### Configuring the preview window current line
+The highlight group used for the current line within the preview window can be
+changed by adding the following to your `~/.vimrc` file.
+
+```vim
+let g:quickr_preview_line_hl = "Search"
+```
+
 ### FAQ
 
 **Nothing happens when I press `<leader><space>` in quickfix/location window.**

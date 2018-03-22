@@ -40,8 +40,7 @@ function! QFList(linenr)
             setlocal nofoldenable       " disable folding
         endif
 
-        " Define a new sign for highlighting the line
-        sign define QuickrPreviewLine text=>> linehl=Search texthl=ErrorMsg
+        " Highlight the current line
         execute 'sign unplace 26'
         execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
 
