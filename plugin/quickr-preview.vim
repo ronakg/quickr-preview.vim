@@ -28,14 +28,25 @@ if !exists("g:quickr_preview_line_hl")
 endif
 " }}
 
-function! QuickrFixExit()
+function! QuickrPreviewExit()
     pclose!
     execute 'sign unplace 26'
 endfunction
 
+" I still don't have an answer to this question. Till then
+" we'd have to settle with this workaround.
+"
+" https://stackoverflow.com/questions/36873661/set-bufdelete-autocmd-for-particular-filetype/
+"
+function! QuickrPreviewSetupExit()
+    if &buftype == 'quickfix'
+        autocmd BufDelete <buffer> call QuickrPreviewExit()
+    endif
+endfunction
+
 augroup quickfix_cmds
     autocmd!
-    autocmd FileType qf autocmd BufDelete <buffer> call QuickrFixExit()
+    autocmd BufCreate * call QuickrPreviewSetupExit()
 augroup END
 
 nnoremap <silent> <plug>(quickr_preview_qf_close) :cclose<CR>
