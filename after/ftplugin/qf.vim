@@ -65,8 +65,15 @@ function! HandleEnterQuickfix(linenr)
     endif
 
     let l:entry = b:qflist[a:linenr - 1]
-    call add(s:buflist, l:entry.bufnr)
     pclose
+
+    " Check whether buffer is already open outside the preview window, if
+    " not then delete it to clear out all local settings (i.e. noswapfile)
+    if index(s:buflist, l:entry.bufnr) == -1 && bufexists(l:entry.bufnr)
+        exe 'silent! bd '.l:entry.bufnr
+    endif
+
+    call add(s:buflist, l:entry.bufnr)
 endfunction
 " }}
 
