@@ -72,6 +72,13 @@ For example:
 nmap <leader>q <plug>(quickr_preview_qf_close)
 ```
 
+#### Configuring the preview window position
+By default, the preview window appears above the quickfix list.  But you can configure it to appear to the 'left', the 'right', or 'below' the quickfix list:
+
+```vim
+let g:quickr_preview_position = 'below'
+```
+
 #### Configuring the preview window sign column
 The symbol used in the sign column within the preview window can be disabled by
 adding the following to your `~/.vimrc` file.

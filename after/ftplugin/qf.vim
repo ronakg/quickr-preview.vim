@@ -24,7 +24,15 @@ function! QFList(linenr)
     let l:entry = b:qflist[a:linenr - 1]
 
     if l:entry.valid
-        execute 'pedit +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+        let extra = ''
+        if g:quickr_preview_position == 'left' || g:quickr_preview_position == 'right'
+            let extra = extra . 'vertical '
+        endif
+        if g:quickr_preview_position == 'below' || g:quickr_preview_position == 'right'
+            let extra = extra . 'belowright '
+        endif
+
+        execute extra . 'pedit +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
 
         " Jump to preview window
         wincmd p
