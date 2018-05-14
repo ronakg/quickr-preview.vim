@@ -3,6 +3,19 @@
 " Version:            1.0
 " Website:            https://github.com/ronakg/quickr-preview.vim
 
+" ClosePreviewWindow() {{
+"
+" This function closes the preview window while ensuring that the
+" quickfix/location window maintain the correct size. This should
+" be called while in the quickfix/location window.
+"
+function! ClosePreviewWindow()
+    let l:orig_win_height = winheight(0)
+    pclose
+    exe 'resize' l:orig_win_height
+endfunction
+" }}
+
 " QFList() {{
 "
 " Operate on an entry in quickfix list
@@ -13,7 +26,7 @@ function! QFList(linenr)
         return
     endif
 
-    pclose
+    call ClosePreviewWindow()
 
     if a:linenr == b:prvlinenr
         let b:prvlinenr = 0
@@ -65,7 +78,7 @@ function! HandleEnterQuickfix(linenr)
     endif
 
     let l:entry = b:qflist[a:linenr - 1]
-    pclose
+    call ClosePreviewWindow()
 
     " Check whether buffer is already open outside the preview window, if
     " not then delete it to clear out all local settings (i.e. noswapfile)
