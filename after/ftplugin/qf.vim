@@ -24,12 +24,12 @@ function! QFList(linenr)
     let l:entry = b:qflist[a:linenr - 1]
 
     if l:entry.valid
-        let position = g:quickr_preview_position
+        let l:position = g:quickr_preview_position
 
-        let axis = position == 'left' || position == 'right' ? 'vsplit' : 'split'
-        let side = position == 'below' || position == 'right' ? 'belowright' : 'aboveleft'
+        let l:axis = l:position ==? 'left' || l:position ==? 'right' ? 'vsplit' : 'split'
+        let l:side = l:position ==? 'below' || l:position ==? 'right' ? 'belowright' : 'aboveleft'
 
-        execute side . ' ' . axis . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+        execute l:side . ' ' . l:axis . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
 
         " Settings for preview window
         setlocal previewwindow
@@ -86,16 +86,16 @@ function! GenerateBufferList()
         let b:qflen = len(b:qflist)
     endif
 
-    for bufnum in range(1, bufnr('$'))
-        if buflisted(bufnum)
-            call add(s:buflist, bufnum)
+    for l:bufnum in range(1, bufnr('$'))
+        if buflisted(l:bufnum)
+            call add(s:buflist, l:bufnum)
         endif
     endfor
 endfunction
 " }}
 
 " Options {{
-if !exists("g:quickr_preview_keymaps")
+if !exists('g:quickr_preview_keymaps')
     let g:quickr_preview_keymaps = 1
 endif
 
