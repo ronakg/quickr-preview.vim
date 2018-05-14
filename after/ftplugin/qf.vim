@@ -133,6 +133,33 @@ function! GetValidEntry(linenr)
 endfunction
 " }}
 
+" QFMove() {{
+"
+" Operate on the quickfix list entry that the cursor has just moved to
+"       linenr is current line number in the quickfix window
+"
+if has('timers')
+    function! QFMove(linenr)
+        if a:linenr != b:prvlinenr
+            if exists('b:quickr_preview_timer')
+                call timer_stop(b:quickr_preview_timer)
+            endif
+            let b:quickr_preview_timer = timer_start(100, 'InvokeQFList')
+        endif
+    endfunction
+    function! InvokeQFList(timer)
+        unlet b:quickr_preview_timer
+        silent call QFList(line('.'))
+    endfunction
+else
+    function! QFMove(linenr)
+        if a:linenr != b:prvlinenr
+            silent call QFList(a:linenr)
+        endif
+    endfunction
+endif
+" }}
+
 " QFList() {{
 "
 " Operate on an entry in quickfix list
@@ -233,6 +260,10 @@ augroup QuickrPreviewQfAutoCmds
     autocmd! * <buffer>
     " Auto close preview window when closing/deleting the qf/loc list
     autocmd BufDelete <buffer> pclose
+    " Auto open preview window while scrolling through the qf/loc list
+    if g:quickr_preview_on_cursor
+        autocmd CursorMoved <buffer> nested silent call QFMove(line("."))
+    endif
 augroup END
 " }}
 

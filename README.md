@@ -89,6 +89,16 @@ changed by adding the following to your `~/.vimrc` file.
 let g:quickr_preview_line_hl = "Search"
 ```
 
+#### Auto-open preview window
+The option `g:quickr_preview_on_cursor` is used to allow the preview window to
+be opened automatically each time the cursor moves to a new line within the
+quickfix/location window. Valid values are zero (to disable) or one (to enable).
+If unspecified this option will default to the following:
+
+```vim
+let g:quickr_preview_on_cursor = 0
+```
+
 ### FAQ
 
 **Nothing happens when I press `<leader><space>` in quickfix/location window.**
