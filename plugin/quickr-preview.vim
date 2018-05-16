@@ -30,6 +30,11 @@ let g:quickr_preview_pedit_cmd =
 " Auto Commands {{
 augroup QuickrPreviewAutoCmds
     autocmd!
+    " Select read-only swap option when opening a file in the preview window
+    autocmd SwapExists *
+    \   if &previewwindow
+    \ |     let v:swapchoice = 'o'
+    \ | endif
     " Select no-modifiable when moving to a buffer in the preview window
     autocmd BufEnter,WinEnter *
     \   if &previewwindow

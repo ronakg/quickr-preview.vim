@@ -124,7 +124,6 @@ function! QFList(linenr)
         if !l:alreadylisted
             setlocal nobuflisted        " don't list this buffer
             setlocal noswapfile         " don't create swap file for this buffer
-            setlocal readonly           " make this buffer readonly
             setlocal nofoldenable       " disable folding
             setlocal bufhidden=delete   " clear out settings when buffer is hidden
         endif
