@@ -24,18 +24,15 @@ function! QFList(linenr)
     let l:entry = b:qflist[a:linenr - 1]
 
     if l:entry.valid
-        let extra = ''
-        if g:quickr_preview_position == 'left' || g:quickr_preview_position == 'right'
-            let extra = extra . 'vertical '
-        endif
-        if g:quickr_preview_position == 'below' || g:quickr_preview_position == 'right'
-            let extra = extra . 'belowright '
-        endif
+        let position = g:quickr_preview_position
 
-        execute extra . 'pedit +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+        let extra = position == 'below' || position == 'right' ? 'belowright ' : ''
+        let direction = position == 'left' || position == 'right' ? 'vsplit' : 'split'
 
-        " Jump to preview window
-        wincmd p
+        execute extra . direction . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+
+        " Settings for preview window
+        setlocal previewwindow
         setlocal number
         setlocal norelativenumber
 
