@@ -26,10 +26,10 @@ function! QFList(linenr)
     if l:entry.valid
         let position = g:quickr_preview_position
 
-        let extra = position == 'below' || position == 'right' ? 'belowright ' : ''
-        let direction = position == 'left' || position == 'right' ? 'vsplit' : 'split'
+        let axis = position == 'left' || position == 'right' ? 'vsplit' : 'split'
+        let side = position == 'below' || position == 'right' ? 'belowright' : 'aboveleft'
 
-        execute extra . direction . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+        execute side . ' ' . axis . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
 
         " Settings for preview window
         setlocal previewwindow
