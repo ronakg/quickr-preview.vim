@@ -32,7 +32,7 @@ installed with a variety of plugin managers:
 <leader><space> : Preview the quickfix/location result in a preview window
 <enter>         : Open the quickfix/location result in a new buffer like usual
 ```
-P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>`
+P.S.: `\\` is the leader key by default. So the mapping is `\<space>` unless `<leader>`
 key is mapped to something else. Note that pressing `<leader><space>` multiple times on
 the same qiuckfix/location result will toggle the preview window.
 
@@ -73,7 +73,7 @@ nmap <leader>q <plug>(quickr_preview_qf_close)
 ```
 
 #### Configuring the preview window position
-By default, the preview window appears above the quickfix list.  But you can configure it to appear to the 'left', the 'right', or 'below' the quickfix list:
+By default, the preview window appears 'above' the quickfix list.  But you can configure it to appear to the 'left', the 'right', or 'below' the quickfix list:
 
 ```vim
 let g:quickr_preview_position = 'below'
