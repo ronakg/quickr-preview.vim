@@ -26,6 +26,9 @@ endif
 if !exists("g:quickr_preview_line_hl")
     let g:quickr_preview_line_hl= "Search"
 endif
+if !exists("g:quickr_preview_position")
+    let g:quickr_preview_position = "above"
+endif
 " }}
 
 function! QuickrPreviewExit()
