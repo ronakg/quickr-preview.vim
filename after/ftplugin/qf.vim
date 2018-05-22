@@ -119,11 +119,6 @@ function! GenerateBufferList()
 endfunction
 " }}
 
-" Options {{
-if !exists('g:quickr_preview_keymaps')
-    let g:quickr_preview_keymaps = 1
-endif
-
 " Setup <plug> {{
 nnoremap <silent> <buffer> <plug>(quickr_preview) :call QFList(line("."))<CR>
 " }}
