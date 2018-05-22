@@ -3,6 +3,19 @@
 " Version:            1.0
 " Website:            https://github.com/ronakg/quickr-preview.vim
 
+" ClosePreviewWindow() {{
+"
+" This function closes the preview window while ensuring that the
+" quickfix/location window maintain the correct size. This should
+" be called while in the quickfix/location window.
+"
+function! ClosePreviewWindow()
+    let l:orig_win_height = winheight(0)
+    pclose
+    execute 'resize' l:orig_win_height
+endfunction
+" }}
+
 " QFList() {{
 "
 " Operate on an entry in quickfix list
@@ -13,7 +26,7 @@ function! QFList(linenr)
         return
     endif
 
-    pclose
+    call ClosePreviewWindow()
 
     if a:linenr == b:prvlinenr
         let b:prvlinenr = 0
@@ -24,12 +37,12 @@ function! QFList(linenr)
     let l:entry = b:qflist[a:linenr - 1]
 
     if l:entry.valid
-        let position = g:quickr_preview_position
+        let l:position = g:quickr_preview_position
 
-        let axis = position == 'left' || position == 'right' ? 'vsplit' : 'split'
-        let side = position == 'below' || position == 'right' ? 'belowright' : 'aboveleft'
+        let l:axis = l:position ==? 'left' || l:position ==? 'right' ? 'vsplit' : 'split'
+        let l:side = l:position ==? 'below' || l:position ==? 'right' ? 'belowright' : 'aboveleft'
 
-        execute side . ' ' . axis . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+        execute l:side . ' ' . l:axis . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
 
         " Settings for preview window
         setlocal previewwindow
@@ -65,8 +78,15 @@ function! HandleEnterQuickfix(linenr)
     endif
 
     let l:entry = b:qflist[a:linenr - 1]
+    call ClosePreviewWindow()
+
+    " Check whether buffer is already open outside the preview window, if
+    " not then delete it to clear out all local settings (i.e. noswapfile)
+    if index(s:buflist, l:entry.bufnr) == -1 && bufexists(l:entry.bufnr)
+        execute 'silent! bd '.l:entry.bufnr
+    endif
+
     call add(s:buflist, l:entry.bufnr)
-    pclose
 endfunction
 " }}
 
@@ -86,16 +106,16 @@ function! GenerateBufferList()
         let b:qflen = len(b:qflist)
     endif
 
-    for bufnum in range(1, bufnr('$'))
-        if buflisted(bufnum)
-            call add(s:buflist, bufnum)
+    for l:bufnum in range(1, bufnr('$'))
+        if buflisted(l:bufnum)
+            call add(s:buflist, l:bufnum)
         endif
     endfor
 endfunction
 " }}
 
 " Options {{
-if !exists("g:quickr_preview_keymaps")
+if !exists('g:quickr_preview_keymaps')
     let g:quickr_preview_keymaps = 1
 endif
 
