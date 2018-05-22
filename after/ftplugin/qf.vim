@@ -80,6 +80,9 @@ function! HandleEnterQuickfix(linenr)
     let l:entry = b:qflist[a:linenr - 1]
     call ClosePreviewWindow()
 
+    " Clear out any previous highlighting
+    execute 'sign unplace 26'
+
     " Check whether buffer is already open outside the preview window, if
     " not then delete it to clear out all local settings (i.e. noswapfile)
     if index(s:buflist, l:entry.bufnr) == -1 && bufexists(l:entry.bufnr)
