@@ -12,7 +12,7 @@
 function! ClosePreviewWindow()
     let l:orig_win_height = winheight(0)
     pclose
-    exe 'resize' l:orig_win_height
+    execute 'resize' l:orig_win_height
 endfunction
 " }}
 
@@ -83,7 +83,7 @@ function! HandleEnterQuickfix(linenr)
     " Check whether buffer is already open outside the preview window, if
     " not then delete it to clear out all local settings (i.e. noswapfile)
     if index(s:buflist, l:entry.bufnr) == -1 && bufexists(l:entry.bufnr)
-        exe 'silent! bd '.l:entry.bufnr
+        execute 'silent! bd '.l:entry.bufnr
     endif
 
     call add(s:buflist, l:entry.bufnr)
