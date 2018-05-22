@@ -52,7 +52,7 @@ augroup quickfix_cmds
     autocmd BufCreate * call QuickrPreviewSetupExit()
 augroup END
 
-nnoremap <silent> <plug>(quickr_preview_qf_close) :cclose<CR>
+nnoremap <silent> <plug>(quickr_preview_qf_close) :cclose<CR>:lclose<CR>
 
 if g:quickr_preview_keymaps
     nmap <leader>q <plug>(quickr_preview_qf_close)
