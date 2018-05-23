@@ -3,6 +3,21 @@
 " Version:            1.0
 " Website:            https://github.com/ronakg/quickr-preview.vim
 
+" OpenPreviewWindow() {{
+"
+" This function opens the specified buffer within the preview window
+" while ensuring that the preview window maintains the correct size
+" and position.
+"
+function! OpenPreviewWindow(bufname, linenr)
+    let l:size = (g:quickr_preview_position =~? '\(left\|right\)') ? winwidth(0)/2 : (&lines-winheight(0))/2
+    let l:orig_preview_height = &previewheight
+    execute 'set previewheight='.l:size
+    execute g:quickr_preview_pedit_cmd.' +'.a:linenr.' '.a:bufname
+    execute 'set previewheight='.l:orig_preview_height
+endfunction
+" }}
+
 " ClosePreviewWindow() {{
 "
 " This function closes the preview window while ensuring that the
@@ -39,14 +54,11 @@ function! QFList(linenr)
     " Ensure the current entry is valid
     let l:entry = b:qflist[a:linenr - 1]
     if l:entry.valid
-        " Determine if the preview window should open in a vertical/horizontal split
-        let l:position = g:quickr_preview_position
-        let l:axis = l:position ==? 'left' || l:position ==? 'right' ? 'vsplit' : 'split'
-        let l:side = l:position ==? 'below' || l:position ==? 'right' ? 'belowright' : 'aboveleft'
         " Open the buffer in the preview window and jump to the line of interest
-        execute l:side . ' ' . l:axis . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+        call OpenPreviewWindow(bufname(l:entry.bufnr), l:entry.lnum)
+        " Go to preview window
+        wincmd P
         " Settings for preview window
-        setlocal previewwindow
         setlocal number
         setlocal norelativenumber
         " Don't mark the buffer unlisted etc. if it existed before quickfix was populated

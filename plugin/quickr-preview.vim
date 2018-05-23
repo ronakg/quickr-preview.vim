@@ -31,6 +31,11 @@ if !exists('g:quickr_preview_position')
 endif
 " }}
 
+" Construct the command used to open the preview window
+let g:quickr_preview_pedit_cmd =
+    \ (g:quickr_preview_position =~? '\(below\|right\)' ? 'belowright' : 'aboveleft').
+    \ (g:quickr_preview_position =~? '\(left\|right\)' ? ' vertical pedit' : ' pedit')
+
 function! QuickrPreviewExit()
     pclose!
     execute 'sign unplace 26'
