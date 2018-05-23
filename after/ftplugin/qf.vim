@@ -28,6 +28,9 @@ function! QFList(linenr)
 
     call ClosePreviewWindow()
 
+    " Clear out any previous highlighting
+    execute 'sign unplace 26'
+
     if a:linenr == b:prvlinenr
         let b:prvlinenr = 0
         return
@@ -59,7 +62,6 @@ function! QFList(linenr)
         endif
 
         " Highlight the current line
-        execute 'sign unplace 26'
         execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
 
         " Go back to quickfix window
