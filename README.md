@@ -73,7 +73,8 @@ nmap <leader>q <plug>(quickr_preview_qf_close)
 ```
 
 #### Configuring the preview window position
-By default, the preview window appears 'above' the quickfix list.  But you can configure it to appear to the 'left', the 'right', or 'below' the quickfix list:
+By default, the preview window appears 'above' the quickfix list.  But you can
+configure it to appear to the 'left', the 'right', or 'below' the quickfix list:
 
 ```vim
 let g:quickr_preview_position = 'below'
@@ -107,7 +108,8 @@ let g:quickr_preview_line_hl = "Search"
 
 **Nothing happens when I press `<leader><space>` in quickfix/location window.**
 
-Make sure `<leader><space>` is not defined to something else by invoking `:verbose map <leader><space>`.
+Make sure `<leader><space>` is not defined to something else by invoking
+`:verbose map <leader><space>`.
 
 ### License
 Copyright (c) Ronak Gandhi. Distributed under the same terms as Vim itself. See
