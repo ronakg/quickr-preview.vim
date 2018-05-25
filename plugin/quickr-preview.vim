@@ -47,20 +47,27 @@ function! QuickrPreviewSetupExit()
     endif
 endfunction
 
+" Auto Commands {{
 augroup quickfix_cmds
     autocmd!
+    " Auto close preview window when closing/deleting the qf/loc list
     autocmd BufCreate * call QuickrPreviewSetupExit()
 augroup END
+" }}
 
+" Mappings {{
 nnoremap <silent> <plug>(quickr_preview_qf_close) :cclose<CR>:lclose<CR>
-
 if g:quickr_preview_keymaps
     nmap <leader>q <plug>(quickr_preview_qf_close)
 endif
+" }}
 
-" Define a new sign for highlighting the current line in the preview window
+" Highlighting {{
 if g:quickr_preview_sign_enable
+    " Define a sign for highlight current line and displaying a sign in the sign column
     execute 'sign define QuickrPreviewLine text='.g:quickr_preview_sign_symbol.' texthl='.g:quickr_preview_sign_hl.' linehl='.g:quickr_preview_line_hl
 else
+    " Define a sign for highlight current line only
     execute 'sign define QuickrPreviewLine linehl='.g:quickr_preview_line_hl
 endif
+" }}
