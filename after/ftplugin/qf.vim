@@ -140,7 +140,10 @@ endfunction
 
 " HandleEnterQuickfix() {{
 "
-" When Enter is pressed close the preview window
+" Close the preview window and open the buffer given by the specified
+" line number; where where the line number is the current line in the
+" qf/loc window. If no valid buffer exists at the specified line then
+" no action is taken.
 "
 function! HandleEnterQuickfix(linenr)
     " Get the current entry and ensure it is valid
@@ -150,6 +153,8 @@ function! HandleEnterQuickfix(linenr)
     endif
     " Close the preview window
     call ClosePreviewWindow()
+    " Open the buffer of interest
+    execute "normal! \<cr>"
 endfunction
 " }}
 
@@ -179,7 +184,7 @@ nnoremap <silent> <buffer> <plug>(quickr_preview) :call QFList(line("."))<CR>
 if g:quickr_preview_keymaps
     nmap <leader><space> <plug>(quickr_preview)
 endif
-nnoremap <buffer> <cr> :call HandleEnterQuickfix(line("."))<CR><CR>
+nnoremap <buffer> <cr> :call HandleEnterQuickfix(line("."))<CR>
 " }}
 
 call InitializeQuickrPreview()
