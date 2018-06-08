@@ -13,7 +13,7 @@ function! OpenPreviewWindow(bufname, linenr)
     let l:size = (g:quickr_preview_position =~? '\(left\|right\)') ? winwidth(0)/2 : (&lines-winheight(0))/2
     let l:orig_preview_height = &previewheight
     execute 'set previewheight='.l:size
-    execute g:quickr_preview_pedit_cmd.' +'.a:linenr.' '.a:bufname
+    execute 'keepjumps '.g:quickr_preview_pedit_cmd.' +'.a:linenr.' '.a:bufname
     execute 'set previewheight='.l:orig_preview_height
 endfunction
 " }}
@@ -101,13 +101,13 @@ function! QFList(linenr)
     if GetPreviewWindow() && l:entry.bufnr == b:prvbufnr
         " Go to preview window
         set eventignore+=all
-        wincmd P
+        keepjumps wincmd P
         " Jump to the line of interest
-        execute l:entry.lnum.' | normal! zz'
+        execute 'keepjumps '.l:entry.lnum.' | normal! zz'
         " Highlight the line of interest
         execute 'match '.g:quickr_preview_line_hl.' /\%'.l:entry.lnum.'l^\s*\zs.\{-}\ze\s*$/'
         " Go back to qf/loc window
-        wincmd p
+        keepjumps wincmd p
         set eventignore-=all
     else
         " Note if the buffer of interest is already listed
@@ -116,7 +116,7 @@ function! QFList(linenr)
         call OpenPreviewWindow(bufname(l:entry.bufnr), l:entry.lnum)
         " Go to preview window
         set eventignore+=all
-        wincmd P
+        keepjumps wincmd P
         " Settings for preview window
         setlocal number
         setlocal norelativenumber
@@ -131,7 +131,7 @@ function! QFList(linenr)
         " Highlight the line of interest
         execute 'match '.g:quickr_preview_line_hl.' /\%'.l:entry.lnum.'l^\s*\zs.\{-}\ze\s*$/'
         " Go back to qf/loc window
-        wincmd p
+        keepjumps wincmd p
         set eventignore-=all
     endif
     let b:prvbufnr = l:entry.bufnr

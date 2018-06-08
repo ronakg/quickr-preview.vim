@@ -1,10 +1,11 @@
 # quickr-preview.vim
 
-Quickly preview quickfix and location results in vim without opening the file. Usually when
-one is browsing quickfix or location results, the file needs to be opened to see the result
-in detail. This spoils the buffer list. `quickr-preview.vim` lets you preview the result in
-detail without spoiling the buffer list. Everything is automatically cleaned up once quickfix
-and/or location windows are closed.
+Quickly preview quickfix and location results in vim without opening the file.
+Usually when one is browsing quickfix or location results, the file needs to be
+opened to see the result in detail. This spoils the buffer list and jump list.
+`quickr-preview.vim` lets you preview the result in detail without spoiling the
+buffer list and jump list. Everything is automatically cleaned up once quickfix
+window and/or location windows are closed.
 
 ### Demo
 
