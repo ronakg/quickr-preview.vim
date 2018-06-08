@@ -46,14 +46,48 @@ function! GetPreviewWindow()
 endfunction
 " }}
 
+" GetValidEntry() {{
+"
+" This function returns a dictionary containing a valid qf/loc entry
+" for the specified line number; where the line number is the current
+" line in the qf/loc window. If no valid entry is found, then an empty
+" dictionary is returned.
+"
+function! GetValidEntry(linenr)
+    " Ensure this function is run within a qf/loc list
+    if &filetype !=# 'qf'
+        return {}
+    endif
+    " Ensure the cached qf/loc list is configured
+    if !exists('b:qflen') || !exists('b:qflist')
+        return {}
+    endif
+    " Ensure the entry exist within the qf/loc list
+    if a:linenr > b:qflen
+        return {}
+    endif
+    " Ensure the current entry is valid
+    if !b:qflist[a:linenr-1].valid
+        return {}
+    endif
+    " Ensure the file actually exists
+    if !filereadable(bufname(b:qflist[a:linenr-1].bufnr))
+        return {}
+    endif
+    " Return the valid entry
+    return b:qflist[a:linenr-1]
+endfunction
+" }}
+
 " QFList() {{
 "
 " Operate on an entry in quickfix list
 "       linenr is current line number in the quickfix window
 "
 function! QFList(linenr)
-    " Ensure the qf/loc list is not empty
-    if b:qflen == 0
+    " Get the current entry and ensure it is valid
+    let l:entry = GetValidEntry(a:linenr)
+    if empty(l:entry)
         return
     endif
     " Clear out any previous highlighting
@@ -65,11 +99,6 @@ function! QFList(linenr)
         return
     endif
     let b:prvlinenr = a:linenr
-    " Ensure the current entry is valid
-    let l:entry = b:qflist[a:linenr - 1]
-    if !l:entry.valid
-        return
-    endif
     " Check if the buffer of interest is already opened in the preview window
     if GetPreviewWindow() && l:entry.bufnr == b:prvbufnr
         " Go to preview window
@@ -113,11 +142,11 @@ endfunction
 " When Enter is pressed, add the result buffer to s:buflist
 " and close the preview window
 function! HandleEnterQuickfix(linenr)
-    " Ensure the qf/loc list is not empty
-    if b:qflen == 0
+    " Get the current entry and ensure it is valid
+    let l:entry = GetValidEntry(a:linenr)
+    if empty(l:entry)
         return
     endif
-    let l:entry = b:qflist[a:linenr - 1]
     " Close the preview window
     call ClosePreviewWindow()
     " Clear out any previous highlighting
