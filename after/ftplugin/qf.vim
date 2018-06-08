@@ -126,6 +126,7 @@ function! QFList(linenr)
             setlocal noswapfile         " don't create swap file for this buffer
             setlocal readonly           " make this buffer readonly
             setlocal nofoldenable       " disable folding
+            setlocal bufhidden=delete   " clear out settings when buffer is hidden
         endif
         " Highlight the line of interest
         execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
@@ -151,11 +152,6 @@ function! HandleEnterQuickfix(linenr)
     call ClosePreviewWindow()
     " Clear out any previous highlighting
     execute 'sign unplace 26'
-    " Check whether buffer is already open outside the preview window, if
-    " not then delete it to clear out all local settings (i.e. noswapfile)
-    if index(s:buflist, l:entry.bufnr) == -1 && bufexists(l:entry.bufnr)
-        execute 'silent! bd '.l:entry.bufnr
-    endif
     " Add the buffer to the list of 'already opened' buffers
     call add(s:buflist, l:entry.bufnr)
 endfunction
