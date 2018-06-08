@@ -110,6 +110,8 @@ function! QFList(linenr)
         wincmd p
         set eventignore-=all
     else
+        " Note if the buffer of interest is already listed
+        let l:alreadylisted = buflisted(l:entry.bufnr)
         " Open the buffer in the preview window and jump to the line of interest
         call OpenPreviewWindow(bufname(l:entry.bufnr), l:entry.lnum)
         " Go to preview window
@@ -119,7 +121,7 @@ function! QFList(linenr)
         setlocal number
         setlocal norelativenumber
         " Don't mark the buffer unlisted etc. if it existed before quickfix was populated
-        if index(s:buflist, l:entry.bufnr) == -1
+        if !l:alreadylisted
             setlocal nobuflisted        " don't list this buffer
             setlocal noswapfile         " don't create swap file for this buffer
             setlocal readonly           " make this buffer readonly
@@ -138,8 +140,8 @@ endfunction
 
 " HandleEnterQuickfix() {{
 "
-" When Enter is pressed, add the result buffer to s:buflist
-" and close the preview window
+" When Enter is pressed close the preview window
+"
 function! HandleEnterQuickfix(linenr)
     " Get the current entry and ensure it is valid
     let l:entry = GetValidEntry(a:linenr)
@@ -148,19 +150,17 @@ function! HandleEnterQuickfix(linenr)
     endif
     " Close the preview window
     call ClosePreviewWindow()
-    " Add the buffer to the list of 'already opened' buffers
-    call add(s:buflist, l:entry.bufnr)
 endfunction
 " }}
 
-" GenerateBufferList() {{
+" InitializeQuickrPreview() {{
 "
-" Generate list of buffers
-" Append already listed buffer to s:buflist
+" This function initializes the local (buffer) variables required
+" by quickr-preview. This should be called each time a new qf/loc
+" buffer is created.
 "
-function! GenerateBufferList()
+function! InitializeQuickrPreview()
     " Initialize default values
-    let s:buflist = []
     let b:prvlinenr = 0
     let b:prvbufnr = 0
     " Grab the location list
@@ -171,12 +171,6 @@ function! GenerateBufferList()
         let b:qflist = getqflist()
         let b:qflen = len(b:qflist)
     endif
-    " Create a list of 'already opened' buffers
-    for l:bufnum in range(1, bufnr('$'))
-        if buflisted(l:bufnum)
-            call add(s:buflist, l:bufnum)
-        endif
-    endfor
 endfunction
 " }}
 
@@ -188,4 +182,5 @@ endif
 nnoremap <buffer> <cr> :call HandleEnterQuickfix(line("."))<CR><CR>
 " }}
 
-call GenerateBufferList()
+call InitializeQuickrPreview()
+
