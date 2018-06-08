@@ -182,11 +182,11 @@ endfunction
 " }}
 
 " Mappings {{
-nnoremap <silent> <buffer> <plug>(quickr_preview) :call QFList(line("."))<CR>
+nnoremap <silent> <buffer> <plug>(quickr_preview) :silent call QFList(line("."))<CR>
 if g:quickr_preview_keymaps
     nmap <leader><space> <plug>(quickr_preview)
 endif
-nnoremap <buffer> <cr> :call HandleEnterQuickfix(line("."))<CR>
+nnoremap <buffer> <cr> :silent call HandleEnterQuickfix(line("."))<CR>
 " }}
 
 call InitializeQuickrPreview()
