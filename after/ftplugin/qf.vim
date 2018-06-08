@@ -31,6 +31,21 @@ function! ClosePreviewWindow()
 endfunction
 " }}
 
+" GetPreviewWindow() {{
+"
+" This function will return the window ID of the preview window;
+" if no preview window is currently open it will return zero.
+"
+function! GetPreviewWindow()
+    for l:winnr in range(1, winnr('$'))
+        if getwinvar(l:winnr, '&previewwindow')
+            return l:winnr
+        endif
+    endfor
+    return 0
+endfunction
+" }}
+
 " QFList() {{
 "
 " Operate on an entry in quickfix list
@@ -41,22 +56,37 @@ function! QFList(linenr)
     if b:qflen == 0
         return
     endif
-    " Close the preview window
-    call ClosePreviewWindow()
     " Clear out any previous highlighting
     execute 'sign unplace 26'
-    " Nothing else to do if the user has selected a same entry again
+    " Close the preview window if the user has selected a same entry again
     if a:linenr == b:prvlinenr
+        call ClosePreviewWindow()
         let b:prvlinenr = 0
         return
     endif
     let b:prvlinenr = a:linenr
     " Ensure the current entry is valid
     let l:entry = b:qflist[a:linenr - 1]
-    if l:entry.valid
+    if !l:entry.valid
+        return
+    endif
+    " Check if the buffer of interest is already opened in the preview window
+    if GetPreviewWindow() && l:entry.bufnr == b:prvbufnr
+        " Go to preview window
+        set eventignore+=all
+        wincmd P
+        " Jump to the line of interest
+        execute l:entry.lnum.' | normal! zz'
+        " Highlight the line of interest
+        execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
+        " Go back to qf/loc window
+        wincmd p
+        set eventignore-=all
+    else
         " Open the buffer in the preview window and jump to the line of interest
         call OpenPreviewWindow(bufname(l:entry.bufnr), l:entry.lnum)
         " Go to preview window
+        set eventignore+=all
         wincmd P
         " Settings for preview window
         setlocal number
@@ -70,9 +100,11 @@ function! QFList(linenr)
         endif
         " Highlight the line of interest
         execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
-        " Go back to quickfix window
+        " Go back to qf/loc window
         wincmd p
+        set eventignore-=all
     endif
+    let b:prvbufnr = l:entry.bufnr
 endfunction
 " }}
 
@@ -109,6 +141,7 @@ function! GenerateBufferList()
     " Initialize default values
     let s:buflist = []
     let b:prvlinenr = 0
+    let b:prvbufnr = 0
     " Grab the location list
     let b:qflist = getloclist(0)
     let b:qflen = len(b:qflist)
