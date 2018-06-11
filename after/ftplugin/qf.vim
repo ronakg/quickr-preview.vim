@@ -181,6 +181,14 @@ function! InitializeQuickrPreview()
 endfunction
 " }}
 
+" Auto Commands {{
+augroup QuickrPreviewQfAutoCmds
+    autocmd! * <buffer>
+    " Auto close preview window when closing/deleting the qf/loc list
+    autocmd BufDelete <buffer> pclose
+augroup END
+" }}
+
 " Mappings {{
 nnoremap <silent> <buffer> <plug>(quickr_preview) :silent call QFList(line("."))<CR>
 if g:quickr_preview_keymaps
