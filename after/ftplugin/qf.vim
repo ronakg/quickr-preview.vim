@@ -90,8 +90,6 @@ function! QFList(linenr)
     if empty(l:entry)
         return
     endif
-    " Clear out any previous highlighting
-    execute 'sign unplace 26'
     " Close the preview window if the user has selected a same entry again
     if a:linenr == b:prvlinenr
         call ClosePreviewWindow()
@@ -107,7 +105,7 @@ function! QFList(linenr)
         " Jump to the line of interest
         execute l:entry.lnum.' | normal! zz'
         " Highlight the line of interest
-        execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
+        execute 'match '.g:quickr_preview_line_hl.' /\%'.l:entry.lnum.'l^\s*\zs.\{-}\ze\s*$/'
         " Go back to qf/loc window
         wincmd p
         set eventignore-=all
@@ -129,7 +127,7 @@ function! QFList(linenr)
             setlocal bufhidden=delete   " clear out settings when buffer is hidden
         endif
         " Highlight the line of interest
-        execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
+        execute 'match '.g:quickr_preview_line_hl.' /\%'.l:entry.lnum.'l^\s*\zs.\{-}\ze\s*$/'
         " Go back to qf/loc window
         wincmd p
         set eventignore-=all
@@ -150,8 +148,6 @@ function! HandleEnterQuickfix(linenr)
     endif
     " Close the preview window
     call ClosePreviewWindow()
-    " Clear out any previous highlighting
-    execute 'sign unplace 26'
     " Add the buffer to the list of 'already opened' buffers
     call add(s:buflist, l:entry.bufnr)
 endfunction

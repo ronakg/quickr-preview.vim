@@ -14,15 +14,6 @@ let g:quickr_preview_loaded = 1
 if !exists('g:quickr_preview_keymaps')
     let g:quickr_preview_keymaps = 1
 endif
-if !exists('g:quickr_preview_sign_enable')
-    let g:quickr_preview_sign_enable = 1
-endif
-if !exists('g:quickr_preview_sign_symbol')
-    let g:quickr_preview_sign_symbol = '>>'
-endif
-if !exists('g:quickr_preview_sign_hl')
-    let g:quickr_preview_sign_hl = 'SignColumn'
-endif
 if !exists('g:quickr_preview_line_hl')
     let g:quickr_preview_line_hl = 'Search'
 endif
@@ -38,7 +29,6 @@ let g:quickr_preview_pedit_cmd =
 
 function! QuickrPreviewExit()
     pclose!
-    execute 'sign unplace 26'
 endfunction
 
 " I still don't have an answer to this question. Till then
@@ -67,12 +57,3 @@ if g:quickr_preview_keymaps
 endif
 " }}
 
-" Highlighting {{
-if g:quickr_preview_sign_enable
-    " Define a sign for highlight current line and displaying a sign in the sign column
-    execute 'sign define QuickrPreviewLine text='.g:quickr_preview_sign_symbol.' texthl='.g:quickr_preview_sign_hl.' linehl='.g:quickr_preview_line_hl
-else
-    " Define a sign for highlight current line only
-    execute 'sign define QuickrPreviewLine linehl='.g:quickr_preview_line_hl
-endif
-" }}
