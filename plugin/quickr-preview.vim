@@ -20,6 +20,9 @@ endif
 if !exists('g:quickr_preview_position')
     let g:quickr_preview_position = 'above'
 endif
+if !exists('g:quickr_preview_size')
+    let g:quickr_preview_size = 0 " auto
+endif
 if !exists('g:quickr_preview_options')
     let g:quickr_preview_options = 'number norelativenumber nofoldenable'
 endif

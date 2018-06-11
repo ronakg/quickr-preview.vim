@@ -10,7 +10,9 @@
 " and position.
 "
 function! OpenPreviewWindow(bufname, linenr)
-    let l:size = (g:quickr_preview_position =~? '\(left\|right\)') ? winwidth(0)/2 : (&lines-winheight(0))/2
+    let l:size = (g:quickr_preview_size > 0) ? g:quickr_preview_size :
+               \ (g:quickr_preview_position =~? '\(left\|right\)') ? winwidth(0)/2 :
+               \ (&lines-winheight(0))/2
     let l:orig_preview_height = &previewheight
     execute 'set previewheight='.l:size
     execute 'keepjumps '.g:quickr_preview_pedit_cmd.' +'.a:linenr.' '.a:bufname

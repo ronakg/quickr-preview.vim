@@ -81,6 +81,16 @@ configure it to appear to the 'left', the 'right', or 'below' the quickfix list:
 let g:quickr_preview_position = 'below'
 ```
 
+#### Configuring the preview window size
+The option `g:quickr_preview_size` is used to configure the size of the preview
+window. Valid values range from zero to any positive integer. When set to zero
+the preview widows will automatically fill half of the available screen space.
+If unspecified this option will default to the following:
+
+```vim
+let g:quickr_preview_size = '0'
+```
+
 #### Configuring the preview window current line
 The highlight group used for the current line within the preview window can be
 changed by adding the following to your `~/.vimrc` file.
