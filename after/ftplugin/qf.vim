@@ -46,6 +46,60 @@ function! GetPreviewWindow()
 endfunction
 " }}
 
+" GetLatestQfLocList() {{
+"
+" This function updates the locally cached qf/loc list (b:qflist)
+" if the qf/loc list has not yet been cached, or (for vim 8.1) if
+" it detects the qf/loc list has changed since it was last cached.
+"
+if v:version >= 801
+    function! GetLatestQfLocList()
+        if !exists('b:qftick')
+            let b:qftick = -1
+        endif
+        " Grab the info for current window
+        let l:wininfo = getwininfo(win_getid())[0]
+        " Process location list
+        if l:wininfo.loclist
+            let l:info = getloclist(0, {'changedtick':1, 'size':1})
+            if l:info.changedtick != b:qftick
+                let b:qflist = getloclist(0)
+                let b:qfsize = l:info.size
+                let b:qftick = l:info.changedtick
+            endif
+            return 1
+        endif
+        " Process quickfix list
+        if l:wininfo.quickfix
+            let l:info = getqflist({'changedtick':1, 'size':1})
+            if l:info.changedtick != b:qftick
+                let b:qflist = getqflist()
+                let b:qfsize = l:info.size
+                let b:qftick = l:info.changedtick
+            endif
+            return 1
+        endif
+        " No qf/loc list found
+        return 0
+    endfunction
+else
+    function! GetLatestQfLocList()
+        if !exists('b:qflist') || !exists('b:qfsize')
+            " Grab the location list
+            let b:qflist = getloclist(0)
+            let b:qfsize = len(b:qflist)
+            " If the location list is empty,
+            " then grab the qiuckfix list
+            if b:qfsize == 0
+                let b:qflist = getqflist()
+                let b:qfsize = len(b:qflist)
+            endif
+        endif
+        return 1
+    endfunction
+endif
+" }}
+
 " GetValidEntry() {{
 "
 " This function returns a dictionary containing a valid qf/loc entry
@@ -58,12 +112,12 @@ function! GetValidEntry(linenr)
     if &filetype !=# 'qf'
         return {}
     endif
-    " Ensure the cached qf/loc list is configured
-    if !exists('b:qflen') || !exists('b:qflist')
+    " Ensure the cached qf/loc list is up to date
+    if !GetLatestQfLocList()
         return {}
     endif
     " Ensure the entry exist within the qf/loc list
-    if a:linenr > b:qflen
+    if a:linenr > b:qfsize
         return {}
     endif
     " Ensure the current entry is valid
@@ -169,14 +223,8 @@ function! InitializeQuickrPreview()
     " Initialize default values
     let b:prvlinenr = 0
     let b:prvbufnr = 0
-    " Grab the location list
-    let b:qflist = getloclist(0)
-    let b:qflen = len(b:qflist)
-    " If the location list is empty, then grab the qiuckfix list
-    if b:qflen == 0
-        let b:qflist = getqflist()
-        let b:qflen = len(b:qflist)
-    endif
+    " Grab the qf/loc list
+    call GetLatestQfLocList()
 endfunction
 " }}
 
