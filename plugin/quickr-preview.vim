@@ -20,6 +20,9 @@ endif
 if !exists('g:quickr_preview_position')
     let g:quickr_preview_position = 'above'
 endif
+if !exists('g:quickr_preview_options')
+    let g:quickr_preview_options = 'number norelativenumber nofoldenable'
+endif
 if !exists('g:quickr_preview_on_cursor')
     let g:quickr_preview_on_cursor = 0
 endif

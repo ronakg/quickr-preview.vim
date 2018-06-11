@@ -89,6 +89,16 @@ changed by adding the following to your `~/.vimrc` file.
 let g:quickr_preview_line_hl = "Search"
 ```
 
+#### Configuring the preview window options
+
+The option `g:quickr_preview_options` is used to configure which vim settings will
+be applied to the buffer when it is opened within the preview window. Valid values
+are any vim settings that can be set with the `setlocal` command. If unspecified
+this option will default to the following:
+```vim
+let g:quickr_preview_options = 'number norelativenumber nofoldenable'
+```
+
 #### Auto-open preview window
 The option `g:quickr_preview_on_cursor` is used to allow the preview window to
 be opened automatically each time the cursor moves to a new line within the

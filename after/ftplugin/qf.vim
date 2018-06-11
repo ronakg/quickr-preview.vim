@@ -199,13 +199,11 @@ function! QFList(linenr)
         set eventignore+=all
         keepjumps wincmd P
         " Settings for preview window
-        setlocal number
-        setlocal norelativenumber
-        " Don't mark the buffer unlisted etc. if it existed before quickfix was populated
+        execute 'setlocal '.g:quickr_preview_options
+        " Setting for unlisted buffers
         if !l:alreadylisted
             setlocal nobuflisted        " don't list this buffer
             setlocal noswapfile         " don't create swap file for this buffer
-            setlocal nofoldenable       " disable folding
             setlocal bufhidden=delete   " clear out settings when buffer is hidden
         endif
         " Highlight the line of interest
