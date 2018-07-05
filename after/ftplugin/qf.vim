@@ -155,6 +155,8 @@ function! HandleEnterQuickfix(linenr)
     call ClosePreviewWindow()
     " Open the buffer of interest
     execute "normal! \<cr>"
+    " Open any folds we may be in
+    silent! foldopen!
 endfunction
 " }}
 
