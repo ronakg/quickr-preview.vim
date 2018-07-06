@@ -23,8 +23,8 @@ endfunction
 " ClosePreviewWindow() {{
 "
 " This function closes the preview window while ensuring that the
-" quickfix/location window maintain the correct size. This should
-" be called while in the quickfix/location window.
+" qf/loc window maintains the correct size. This should be called
+" while in the qf/loc window.
 "
 function! ClosePreviewWindow()
     let l:orig_win_height = winheight(0)
@@ -137,8 +137,10 @@ endfunction
 
 " QFMove() {{
 "
-" Operate on the quickfix list entry that the cursor has just moved to
-"       linenr is current line number in the quickfix window
+" Detect when the cursor has moved to a new entry in the qf/loc window,
+" and (if so) call QFList() to open the preview window with the buffer
+" given by the specified line number; where the line number is the new
+" line that the cursor has moved to within the qf/loc window.
 "
 if has('timers')
     function! QFMove(linenr)
@@ -164,8 +166,9 @@ endif
 
 " QFList() {{
 "
-" Operate on an entry in quickfix list
-"       linenr is current line number in the quickfix window
+" Open the preview window and load the buffer given by the specified line
+" number; where the line number is the current line in the qf/loc window.
+" If no valid buffer exists at the specified line then no action is taken.
 "
 function! QFList(linenr)
     " Get the current entry and ensure it is valid
