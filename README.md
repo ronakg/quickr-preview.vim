@@ -16,32 +16,29 @@ window and/or location windows are closed.
 This plugin follows the standard runtime path structure, and as such it can be
 installed with a variety of plugin managers:
 
-*  [Pathogen](https://github.com/tpope/vim-pathogen)
-  - `git clone https://github.com/ronakg/quickr-preview.vim ~/.vim/bundle/quickr-preview.vim`
-*  [NeoBundle](https://github.com/Shougo/neobundle.vim)
-  - `NeoBundle 'ronakg/quickr-preview.vim'`
-*  [Vundle](https://github.com/gmarik/vundle)
-  - `Plugin 'ronakg/quickr-preview.vim'`
-*  [Plug](https://github.com/junegunn/vim-plug)
-  - `Plug 'ronakg/quickr-preview.vim'`
-*  Manual
-  - copy all of the files into your `~/.vim` directory
+Manager | Command
+------- | -------
+[Pathogen](https://github.com/tpope/vim-pathogen) |  `git clone https://github.com/ronakg/quickr-preview.vim ~/.vim/bundle/quickr-preview.vim`
+[NeoBundle](https://github.com/Shougo/neobundle.vim) | `NeoBundle 'ronakg/quickr-preview.vim'`
+[Vundle](https://github.com/gmarik/vundle) | `Plugin 'ronakg/quickr-preview.vim'`
+[Plug](https://github.com/junegunn/vim-plug) | `Plug 'ronakg/quickr-preview.vim'`
+Manual | copy all of the files into your `~/.vim` directory
 
 ### Default Key maps
 
-```vim
+```
 <leader><space> : Preview the quickfix/location result in a preview window
 <enter>         : Open the quickfix/location result in a new buffer like usual
 ```
-P.S.: `\` is the leader key by default. So the mapping is `\<space>` unless `<leader>`
-key is mapped to something else. Note that pressing `<leader><space>` multiple times on
-the same qiuckfix/location result will toggle the preview window.
+`\` is the leader key by default. So the mapping is `\<space>` unless `<leader>`
+key is mapped to something else. Note that pressing `<leader><space>` multiple
+times on the same qiuckfix/location result will toggle the preview window.
 
 ### Customization
 
 #### Disable default key mappings
-If you want to use your own key mappings, you can disable the default key
-mappings by adding following to your `~/.vimrc` file.
+If you want to use your own key mappings, disable the default key mappings by
+adding following to your `~/.vimrc`.
 
 ```vim
 let g:quickr_preview_keymaps = 0
@@ -49,36 +46,29 @@ let g:quickr_preview_keymaps = 0
 
 #### Define custom key mappings
 
-##### Use following `<plug>` to preview quickfix/location results:
-
-```vim
-<plug>(quickr_preview)
-```
-
-For example:
+Use `<plug>(quickr_preview)` to define a custom mapping for previewing the
+current quickfix/location results. For example:
 
 ```vim
 nmap <leader>p <plug>(quickr_preview)
 ```
 
-##### Use following `<plug>` to quickly close the quickfix/location window (and in turn preview window) from anywhere:
-
-```vim
-<plug>(quickr_preview_qf_close)
-```
-
-For example:
+Use `<plug>(quickr_preview_qf_close)` to define a custom mapping for quickly
+closing the quickfix/location window (and in turn the preview window). For
+example:
 
 ```vim
 nmap <leader>q <plug>(quickr_preview_qf_close)
 ```
 
 #### Configuring the preview window position
-By default, the preview window appears 'above' the quickfix list.  But you can
-configure it to appear to the 'left', the 'right', or 'below' the quickfix list:
+The option `g:quickr_preview_position` is used to configure where the preview
+window will be opened relative to the qiuckfix/location window. Valid values are
+`above`, `below`, `left`, or `right`. If unspecified this option will default to
+the following:
 
 ```vim
-let g:quickr_preview_position = 'below'
+let g:quickr_preview_position = 'above'
 ```
 
 #### Configuring the preview window size
@@ -91,9 +81,10 @@ If unspecified this option will default to the following:
 let g:quickr_preview_size = '0'
 ```
 
-#### Configuring the preview window current line
-The highlight group used for the current line within the preview window can be
-changed by adding the following to your `~/.vimrc` file.
+#### Configuring the preview window highlighting
+The option `g:quickr_preview_line_hl` is used to configure the highlight group
+used to highlight the current result in the preview window. Valid values are any
+valid highlight group. If unspecified this option will default to the following:
 
 ```vim
 let g:quickr_preview_line_hl = "Search"
