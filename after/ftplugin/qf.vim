@@ -3,11 +3,28 @@
 " Version:            1.0
 " Website:            https://github.com/ronakg/quickr-preview.vim
 
+" OpenPreviewWindow() {{
+"
+" This function opens the specified buffer within the preview window
+" while ensuring that the preview window maintains the correct size
+" and position.
+"
+function! OpenPreviewWindow(bufname, linenr)
+    let l:size = (g:quickr_preview_size > 0) ? g:quickr_preview_size :
+               \ (g:quickr_preview_position =~? '\(left\|right\)') ? winwidth(0)/2 :
+               \ (&lines-winheight(0))/2
+    let l:orig_preview_height = &previewheight
+    execute 'set previewheight='.l:size
+    execute 'keepjumps '.g:quickr_preview_pedit_cmd.' +'.a:linenr.' '.a:bufname
+    execute 'set previewheight='.l:orig_preview_height
+endfunction
+" }}
+
 " ClosePreviewWindow() {{
 "
 " This function closes the preview window while ensuring that the
-" quickfix/location window maintain the correct size. This should
-" be called while in the quickfix/location window.
+" qf/loc window maintains the correct size. This should be called
+" while in the qf/loc window.
 "
 function! ClosePreviewWindow()
     let l:orig_win_height = winheight(0)
@@ -16,110 +33,250 @@ function! ClosePreviewWindow()
 endfunction
 " }}
 
+" GetPreviewWindow() {{
+"
+" This function will return the window ID of the preview window;
+" if no preview window is currently open it will return zero.
+"
+function! GetPreviewWindow()
+    for l:winnr in range(1, winnr('$'))
+        if getwinvar(l:winnr, '&previewwindow')
+            return l:winnr
+        endif
+    endfor
+    return 0
+endfunction
+" }}
+
+" GetLatestQfLocList() {{
+"
+" This function updates the locally cached qf/loc list (b:qflist)
+" if the qf/loc list has not yet been cached, or (for vim 8.1) if
+" it detects the qf/loc list has changed since it was last cached.
+"
+if v:version >= 801
+    function! GetLatestQfLocList()
+        if !exists('b:qftick')
+            let b:qftick = -1
+        endif
+        " Grab the info for current window
+        let l:wininfo = getwininfo(win_getid())[0]
+        " Process location list
+        if l:wininfo.loclist
+            let l:info = getloclist(0, {'changedtick':1, 'size':1})
+            if l:info.changedtick != b:qftick
+                let b:qflist = getloclist(0)
+                let b:qfsize = l:info.size
+                let b:qftick = l:info.changedtick
+            endif
+            return 1
+        endif
+        " Process quickfix list
+        if l:wininfo.quickfix
+            let l:info = getqflist({'changedtick':1, 'size':1})
+            if l:info.changedtick != b:qftick
+                let b:qflist = getqflist()
+                let b:qfsize = l:info.size
+                let b:qftick = l:info.changedtick
+            endif
+            return 1
+        endif
+        " No qf/loc list found
+        return 0
+    endfunction
+else
+    function! GetLatestQfLocList()
+        if !exists('b:qflist') || !exists('b:qfsize')
+            " Grab the location list
+            let b:qflist = getloclist(0)
+            let b:qfsize = len(b:qflist)
+            " If the location list is empty,
+            " then grab the qiuckfix list
+            if b:qfsize == 0
+                let b:qflist = getqflist()
+                let b:qfsize = len(b:qflist)
+            endif
+        endif
+        return 1
+    endfunction
+endif
+" }}
+
+" GetValidEntry() {{
+"
+" This function returns a dictionary containing a valid qf/loc entry
+" for the specified line number; where the line number is the current
+" line in the qf/loc window. If no valid entry is found, then an empty
+" dictionary is returned.
+"
+function! GetValidEntry(linenr)
+    " Ensure this function is run within a qf/loc list
+    if &filetype !=# 'qf'
+        return {}
+    endif
+    " Ensure the cached qf/loc list is up to date
+    if !GetLatestQfLocList()
+        return {}
+    endif
+    " Ensure the entry exist within the qf/loc list
+    if a:linenr > b:qfsize
+        return {}
+    endif
+    " Ensure the current entry is valid
+    if !b:qflist[a:linenr-1].valid
+        return {}
+    endif
+    " Ensure the file actually exists
+    if !filereadable(bufname(b:qflist[a:linenr-1].bufnr))
+        return {}
+    endif
+    " Return the valid entry
+    return b:qflist[a:linenr-1]
+endfunction
+" }}
+
+" QFMove() {{
+"
+" Detect when the cursor has moved to a new entry in the qf/loc window,
+" and (if so) call QFList() to open the preview window with the buffer
+" given by the specified line number; where the line number is the new
+" line that the cursor has moved to within the qf/loc window.
+"
+if has('timers')
+    function! QFMove(linenr)
+        if a:linenr != b:prvlinenr
+            if exists('b:quickr_preview_timer')
+                call timer_stop(b:quickr_preview_timer)
+            endif
+            let b:quickr_preview_timer = timer_start(100, 'InvokeQFList')
+        endif
+    endfunction
+    function! InvokeQFList(timer)
+        unlet b:quickr_preview_timer
+        silent call QFList(line('.'))
+    endfunction
+else
+    function! QFMove(linenr)
+        if a:linenr != b:prvlinenr
+            silent call QFList(a:linenr)
+        endif
+    endfunction
+endif
+" }}
+
 " QFList() {{
 "
-" Operate on an entry in quickfix list
-"       linenr is current line number in the quickfix window
+" Open the preview window and load the buffer given by the specified line
+" number; where the line number is the current line in the qf/loc window.
+" If no valid buffer exists at the specified line then no action is taken.
 "
 function! QFList(linenr)
-    " Ensure the qf/loc list is not empty
-    if b:qflen == 0
+    " Get the current entry and ensure it is valid
+    let l:entry = GetValidEntry(a:linenr)
+    if empty(l:entry)
         return
     endif
-    " Close the preview window
-    call ClosePreviewWindow()
-    " Clear out any previous highlighting
-    execute 'sign unplace 26'
-    " Nothing else to do if the user has selected a same entry again
+    " Close the preview window if the user has selected a same entry again
     if a:linenr == b:prvlinenr
+        call ClosePreviewWindow()
         let b:prvlinenr = 0
         return
     endif
     let b:prvlinenr = a:linenr
-    " Ensure the current entry is valid
-    let l:entry = b:qflist[a:linenr - 1]
-    if l:entry.valid
-        " Determine if the preview window should open in a vertical/horizontal split
-        let l:position = g:quickr_preview_position
-        let l:axis = l:position ==? 'left' || l:position ==? 'right' ? 'vsplit' : 'split'
-        let l:side = l:position ==? 'below' || l:position ==? 'right' ? 'belowright' : 'aboveleft'
+    " Check if the buffer of interest is already opened in the preview window
+    if GetPreviewWindow() && l:entry.bufnr == b:prvbufnr
+        " Go to preview window
+        set eventignore+=all
+        keepjumps wincmd P
+        " Jump to the line of interest
+        execute 'keepjumps '.l:entry.lnum.' | normal! zz'
+        " Highlight the line of interest
+        execute 'match '.g:quickr_preview_line_hl.' /\%'.l:entry.lnum.'l^\s*\zs.\{-}\ze\s*$/'
+        " Go back to qf/loc window
+        keepjumps wincmd p
+        set eventignore-=all
+    else
+        " Note if the buffer of interest is already listed
+        let l:alreadylisted = buflisted(l:entry.bufnr)
         " Open the buffer in the preview window and jump to the line of interest
-        execute l:side . ' ' . l:axis . ' +' . l:entry.lnum . ' ' . bufname(l:entry.bufnr)
+        call OpenPreviewWindow(bufname(l:entry.bufnr), l:entry.lnum)
+        " Go to preview window
+        set eventignore+=all
+        keepjumps wincmd P
         " Settings for preview window
-        setlocal previewwindow
-        setlocal number
-        setlocal norelativenumber
-        " Don't mark the buffer unlisted etc. if it existed before quickfix was populated
-        if index(s:buflist, l:entry.bufnr) == -1
+        execute 'setlocal '.g:quickr_preview_options
+        " Setting for unlisted buffers
+        if !l:alreadylisted
             setlocal nobuflisted        " don't list this buffer
             setlocal noswapfile         " don't create swap file for this buffer
-            setlocal readonly           " make this buffer readonly
-            setlocal nofoldenable       " disable folding
+            setlocal bufhidden=delete   " clear out settings when buffer is hidden
         endif
         " Highlight the line of interest
-        execute 'sign place 26 name=QuickrPreviewLine line=' . l:entry.lnum . ' buffer=' . l:entry.bufnr
-        " Go back to quickfix window
-        wincmd p
+        execute 'match '.g:quickr_preview_line_hl.' /\%'.l:entry.lnum.'l^\s*\zs.\{-}\ze\s*$/'
+        " Go back to qf/loc window
+        keepjumps wincmd p
+        set eventignore-=all
     endif
+    let b:prvbufnr = l:entry.bufnr
 endfunction
 " }}
 
 " HandleEnterQuickfix() {{
 "
-" When Enter is pressed, add the result buffer to s:buflist
-" and close the preview window
+" Close the preview window and open the buffer given by the specified
+" line number; where where the line number is the current line in the
+" qf/loc window. If no valid buffer exists at the specified line then
+" no action is taken.
+"
 function! HandleEnterQuickfix(linenr)
-    " Ensure the qf/loc list is not empty
-    if b:qflen == 0
+    " Get the current entry and ensure it is valid
+    let l:entry = GetValidEntry(a:linenr)
+    if empty(l:entry)
         return
     endif
-    let l:entry = b:qflist[a:linenr - 1]
     " Close the preview window
     call ClosePreviewWindow()
-    " Clear out any previous highlighting
-    execute 'sign unplace 26'
-    " Check whether buffer is already open outside the preview window, if
-    " not then delete it to clear out all local settings (i.e. noswapfile)
-    if index(s:buflist, l:entry.bufnr) == -1 && bufexists(l:entry.bufnr)
-        execute 'silent! bd '.l:entry.bufnr
-    endif
-    " Add the buffer to the list of 'already opened' buffers
-    call add(s:buflist, l:entry.bufnr)
+    " Open the buffer of interest
+    execute "normal! \<cr>"
+    " Open any folds we may be in
+    silent! foldopen!
 endfunction
 " }}
 
-" GenerateBufferList() {{
+" InitializeQuickrPreview() {{
 "
-" Generate list of buffers
-" Append already listed buffer to s:buflist
+" This function initializes the local (buffer) variables required
+" by quickr-preview. This should be called each time a new qf/loc
+" buffer is created.
 "
-function! GenerateBufferList()
+function! InitializeQuickrPreview()
     " Initialize default values
-    let s:buflist = []
     let b:prvlinenr = 0
-    " Grab the location list
-    let b:qflist = getloclist(0)
-    let b:qflen = len(b:qflist)
-    " If the location list is empty, then grab the qiuckfix list
-    if b:qflen == 0
-        let b:qflist = getqflist()
-        let b:qflen = len(b:qflist)
-    endif
-    " Create a list of 'already opened' buffers
-    for l:bufnum in range(1, bufnr('$'))
-        if buflisted(l:bufnum)
-            call add(s:buflist, l:bufnum)
-        endif
-    endfor
+    let b:prvbufnr = 0
+    " Grab the qf/loc list
+    call GetLatestQfLocList()
 endfunction
+" }}
+
+" Auto Commands {{
+augroup QuickrPreviewQfAutoCmds
+    autocmd! * <buffer>
+    " Auto close preview window when closing/deleting the qf/loc list
+    autocmd BufDelete <buffer> pclose
+    " Auto open preview window while scrolling through the qf/loc list
+    if g:quickr_preview_on_cursor
+        autocmd CursorMoved <buffer> nested silent call QFMove(line("."))
+    endif
+augroup END
 " }}
 
 " Mappings {{
-nnoremap <silent> <buffer> <plug>(quickr_preview) :call QFList(line("."))<CR>
+nnoremap <silent> <buffer> <plug>(quickr_preview) :silent call QFList(line("."))<CR>
 if g:quickr_preview_keymaps
     nmap <leader><space> <plug>(quickr_preview)
 endif
-nnoremap <buffer> <cr> :call HandleEnterQuickfix(line("."))<CR><CR>
+nnoremap <buffer> <cr> :silent call HandleEnterQuickfix(line("."))<CR>
 " }}
 
-call GenerateBufferList()
+call InitializeQuickrPreview()
+

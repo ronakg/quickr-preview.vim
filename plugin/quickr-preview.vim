@@ -14,44 +14,52 @@ let g:quickr_preview_loaded = 1
 if !exists('g:quickr_preview_keymaps')
     let g:quickr_preview_keymaps = 1
 endif
-if !exists('g:quickr_preview_sign_enable')
-    let g:quickr_preview_sign_enable = 1
-endif
-if !exists('g:quickr_preview_sign_symbol')
-    let g:quickr_preview_sign_symbol = '>>'
-endif
-if !exists('g:quickr_preview_sign_hl')
-    let g:quickr_preview_sign_hl = 'SignColumn'
-endif
 if !exists('g:quickr_preview_line_hl')
     let g:quickr_preview_line_hl = 'Search'
 endif
 if !exists('g:quickr_preview_position')
     let g:quickr_preview_position = 'above'
 endif
+if !exists('g:quickr_preview_size')
+    let g:quickr_preview_size = 0 " auto
+endif
+if !exists('g:quickr_preview_options')
+    let g:quickr_preview_options = 'number norelativenumber nofoldenable'
+endif
+if !exists('g:quickr_preview_on_cursor')
+    let g:quickr_preview_on_cursor = 0
+endif
 " }}
 
-function! QuickrPreviewExit()
-    pclose!
-    execute 'sign unplace 26'
-endfunction
-
-" I still don't have an answer to this question. Till then
-" we'd have to settle with this workaround.
-"
-" https://stackoverflow.com/questions/36873661/set-bufdelete-autocmd-for-particular-filetype/
-"
-function! QuickrPreviewSetupExit()
-    if &buftype == 'quickfix'
-        autocmd BufDelete <buffer> call QuickrPreviewExit()
-    endif
-endfunction
+" Construct the command used to open the preview window
+let g:quickr_preview_pedit_cmd =
+    \ (g:quickr_preview_position =~? '\(below\|right\)' ? 'belowright' : 'aboveleft').
+    \ (g:quickr_preview_position =~? '\(left\|right\)' ? ' vertical pedit' : ' pedit')
 
 " Auto Commands {{
-augroup quickfix_cmds
+augroup QuickrPreviewAutoCmds
     autocmd!
-    " Auto close preview window when closing/deleting the qf/loc list
-    autocmd BufCreate * call QuickrPreviewSetupExit()
+    " Select read-only swap option when opening a file in the preview window
+    autocmd SwapExists *
+    \   if &previewwindow
+    \ |     let v:swapchoice = 'o'
+    \ | endif
+    " Select no-modifiable when moving to a buffer in the preview window
+    autocmd BufEnter,WinEnter *
+    \   if &previewwindow
+    \ |     if !exists('b:quickr_preview_modifiable')
+    \ |         let b:quickr_preview_modifiable = &modifiable
+    \ |         let &modifiable = 0
+    \ |    endif
+    \ | endif
+    " Select modifiable when moving from a buffer in the preview window
+    autocmd BufLeave,WinLeave *
+    \   if &previewwindow
+    \ |     if exists('b:quickr_preview_modifiable')
+    \ |         let &modifiable = b:quickr_preview_modifiable
+    \ |         unlet b:quickr_preview_modifiable
+    \ |     endif
+    \ | endif
 augroup END
 " }}
 
@@ -62,12 +70,3 @@ if g:quickr_preview_keymaps
 endif
 " }}
 
-" Highlighting {{
-if g:quickr_preview_sign_enable
-    " Define a sign for highlight current line and displaying a sign in the sign column
-    execute 'sign define QuickrPreviewLine text='.g:quickr_preview_sign_symbol.' texthl='.g:quickr_preview_sign_hl.' linehl='.g:quickr_preview_line_hl
-else
-    " Define a sign for highlight current line only
-    execute 'sign define QuickrPreviewLine linehl='.g:quickr_preview_line_hl
-endif
-" }}
