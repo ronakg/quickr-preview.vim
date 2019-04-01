@@ -240,6 +240,9 @@ function! HandleEnterQuickfix(linenr)
     execute "normal! \<cr>"
     " Open any folds we may be in
     silent! foldopen!
+    if g:quickr_preview_exit_on_enter
+        lclose
+    endif
 endfunction
 " }}
 
