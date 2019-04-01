@@ -110,6 +110,16 @@ If unspecified this option will default to the following:
 let g:quickr_preview_on_cursor = 0
 ```
 
+#### Auto-close quickfix on enter
+The option `g:quickr_preview_exit_on_enter` is used to define whether quickfix
+window will be automaticaly closed on enter or not. Valid values are zero
+(to disable) or one (to enable). If unspecified this option will default to the
+following:
+
+```vim
+let g:quickr_preview_exit_on_enter = 0
+```
+
 ### FAQ
 
 **Nothing happens when I press `<leader><space>` in quickfix/location window.**
