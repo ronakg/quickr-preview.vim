@@ -241,7 +241,7 @@ function! HandleEnterQuickfix(linenr)
     " Open any folds we may be in
     silent! foldopen!
     if g:quickr_preview_exit_on_enter
-        lclose
+        cclose
     endif
 endfunction
 " }}
