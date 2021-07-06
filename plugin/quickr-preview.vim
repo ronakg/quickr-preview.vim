@@ -32,6 +32,9 @@ endif
 if !exists('g:quickr_preview_exit_on_enter')
     let g:quickr_preview_exit_on_enter = 0
 endif
+if !exists('g:quickr_preview_modifiable')
+    let g:quickr_preview_modifiable = 0
+endif
 " }}
 
 " Construct the command used to open the preview window
@@ -50,10 +53,12 @@ augroup QuickrPreviewAutoCmds
     " Select no-modifiable when moving to a buffer in the preview window
     autocmd BufEnter,WinEnter *
     \   if &previewwindow
-    \ |     if !exists('b:quickr_preview_modifiable')
-    \ |         let b:quickr_preview_modifiable = &modifiable
-    \ |         let &modifiable = 0
-    \ |    endif
+    \ |     if !g:quickr_preview_modifiable
+    \ |         if !exists('b:quickr_preview_modifiable')
+    \ |             let b:quickr_preview_modifiable = &modifiable
+    \ |             let &modifiable = 0
+    \ |         endif
+    \ |     endif
     \ | endif
     " Select modifiable when moving from a buffer in the preview window
     autocmd BufLeave,WinLeave *
