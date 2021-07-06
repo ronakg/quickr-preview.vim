@@ -120,6 +120,16 @@ following:
 let g:quickr_preview_exit_on_enter = 0
 ```
 
+#### Allow modification of the contents of the preview window
+The option `g:quickr_preview_modifiable` is used to define whether the quickfix
+window's contents are allowed to be modified. Valid values are zero (to
+disallow modification) or one (to enable modification). If unspecified this
+option will default to the following:
+
+```vim
+let g:quickr_preview_modifiable = 0
+```
+
 ### FAQ
 
 **Nothing happens when I press `<leader><space>` in quickfix/location window.**
