@@ -1,0 +1,154 @@
+quickr-preview.txt
+
+================================================================================
+CONTENTS                                                 *quickr-preview-contents*
+
+1. quickr-preview.vim..........................|quickr-preview-quickr-preview.vim|
+        1.1. Installation............................|quickr-preview-installation|
+        1.2. Default Key maps....................|quickr-preview-default_key_maps|
+        1.3. Customization..........................|quickr-preview-customization|
+            1.3.1. Disable default key mappings.|quickr-preview-disable_default_key_mappings|
+            1.3.2. Define custom key mappings.|quickr-preview-define_custom_key_mappings|
+            1.3.3. Configuring the preview window position.|quickr-preview-configuring_the_preview_window_position|
+            1.3.4. Configuring the preview window size.|quickr-preview-configuring_the_preview_window_size|
+            1.3.5. Configuring the preview window highlighting.|quickr-preview-configuring_the_preview_window_highlighting|
+            1.3.6. Configuring the preview window options.|quickr-preview-configuring_the_preview_window_options|
+            1.3.7. Auto-open preview window.|quickr-preview-auto-open_preview_window|
+            1.3.8. Auto-close quickfix on enter.|quickr-preview-auto-close_quickfix_on_enter|
+            1.3.9. Allow modification of the contents of the preview window.|quickr-preview-allow_modification_of_the_contents_of_the_preview_window|
+        1.4. FAQ..............................................|quickr-preview-faq|
+        1.5. License......................................|quickr-preview-license|
+
+================================================================================
+QUICKR-PREVIEW.VIM                             *quickr-preview-quickr-preview.vim*
+
+Quickly preview quickfix and location results in vim without opening the file.
+Usually when one is browsing quickfix or location results, the file needs to be
+opened to see the result in detail. This spoils the buffer list and jump list.
+`quickr-preview.vim` lets you preview the result in detail without spoiling the
+buffer list and jump list. Everything is automatically cleaned up once quickfix
+window and/or location windows are closed.
+
+INSTALLATION                                         *quickr-preview-installation*
+
+This plugin follows the standard runtime path structure, and as such it can be
+installed with a variety of plugin managers or by copying all of the files into
+your `~/.vim` directory
+
+DEFAULT KEY MAPS                                 *quickr-preview-default_key_maps*
+>
+    <leader><space> : Preview the quickfix/location result in a preview window
+    <enter>         : Open the quickfix/location result in a new buffer like usual
+<
+
+`\` is the leader key by default. So the mapping is `\<space>` unless `<leader>`
+key is mapped to something else. Note that pressing `<leader><space>` multiple
+times on the same qiuckfix/location result will toggle the preview window.
+
+CUSTOMIZATION                                       *quickr-preview-customization*
+
+DISABLE DEFAULT KEY MAPPINGS         *quickr-preview-disable_default_key_mappings*
+
+If you want to use your own key mappings, disable the default key mappings by
+adding following to your `~/.vimrc`.
+>
+    let g:quickr_preview_keymaps = 0
+<
+
+DEFINE CUSTOM KEY MAPPINGS             *quickr-preview-define_custom_key_mappings*
+
+Use `<plug>(quickr_preview)` to define a custom mapping for previewing the
+current quickfix/location results. For example:
+>
+    nmap <leader>p <plug>(quickr_preview)
+<
+
+Use `<plug>(quickr_preview_qf_close)` to define a custom mapping for quickly
+closing the quickfix/location window (and in turn the preview window). For
+example:
+>
+    nmap <leader>q <plug>(quickr_preview_qf_close)
+<
+
+CONFIGURING THE PREVIEW WINDOW POSITION *quickr-preview-configuring_the_preview_window_position*
+
+The option `g:quickr_preview_position` is used to configure where the preview
+window will be opened relative to the qiuckfix/location window. Valid values are
+`above`, `below`, `left`, or `right`. If unspecified this option will default to
+the following:
+>
+    let g:quickr_preview_position = 'above'
+<
+
+CONFIGURING THE PREVIEW WINDOW SIZE *quickr-preview-configuring_the_preview_window_size*
+
+The option `g:quickr_preview_size` is used to configure the size of the preview
+window. Valid values range from zero to any positive integer. When set to zero
+the preview widows will automatically fill half of the available screen space.
+If unspecified this option will default to the following:
+>
+    let g:quickr_preview_size = '0'
+<
+
+CONFIGURING THE PREVIEW WINDOW HIGHLIGHTING *quickr-preview-configuring_the_preview_window_highlighting*
+
+The option `g:quickr_preview_line_hl` is used to configure the highlight group
+used to highlight the current result in the preview window. Valid values are any
+valid highlight group. If unspecified this option will default to the following:
+>
+    let g:quickr_preview_line_hl = "Search"
+<
+
+CONFIGURING THE PREVIEW WINDOW OPTIONS *quickr-preview-configuring_the_preview_window_options*
+
+The option `g:quickr_preview_options` is used to configure which vim settings will
+be applied to the buffer when it is opened within the preview window. Valid values
+are any vim settings that can be set with the `setlocal` command. If unspecified
+this option will default to the following:
+>
+    let g:quickr_preview_options = 'number norelativenumber nofoldenable'
+<
+
+AUTO-OPEN PREVIEW WINDOW                 *quickr-preview-auto-open_preview_window*
+
+The option `g:quickr_preview_on_cursor` is used to allow the preview window to
+be opened automatically each time the cursor moves to a new line within the
+quickfix/location window. Valid values are zero (to disable) or one (to enable).
+If unspecified this option will default to the following:
+>
+    let g:quickr_preview_on_cursor = 0
+<
+
+AUTO-CLOSE QUICKFIX ON ENTER         *quickr-preview-auto-close_quickfix_on_enter*
+
+The option `g:quickr_preview_exit_on_enter` is used to define whether quickfix
+window will be automaticaly closed on enter or not. Valid values are zero
+(to disable) or one (to enable). If unspecified this option will default to the
+following:
+>
+    let g:quickr_preview_exit_on_enter = 0
+<
+
+ALLOW MODIFICATION OF THE CONTENTS OF THE PREVIEW WINDOW *quickr-preview-allow_modification_of_the_contents_of_the_preview_window*
+
+The option `g:quickr_preview_modifiable` is used to define whether the quickfix
+window's contents are allowed to be modified. Valid values are zero (to
+disallow modification) or one (to enable modification). If unspecified this
+option will default to the following:
+>
+    let g:quickr_preview_modifiable = 0
+<
+
+FAQ                                                           *quickr-preview-faq*
+
+Nothing happens when I press `<leader><space>` in quickfix/location window.
+
+Make sure `<leader><space>` is not defined to something else by invoking
+.
+
+LICENSE                                                   *quickr-preview-license*
+
+Copyright (c) Ronak Gandhi. Distributed under the same terms as Vim itself. See
+
+
+vim:tw=78:ts=8:ft=help:norl:
