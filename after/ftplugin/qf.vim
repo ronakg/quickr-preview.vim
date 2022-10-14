@@ -265,7 +265,7 @@ endfunction
 augroup QuickrPreviewQfAutoCmds
     autocmd! * <buffer>
     " Auto close preview window when closing/deleting the qf/loc list
-    autocmd BufDelete <buffer> silent! pclose
+    autocmd WinClosed <buffer> silent! pclose
     " Auto open preview window while scrolling through the qf/loc list
     if g:quickr_preview_on_cursor
         autocmd CursorMoved <buffer> nested silent call QFMove(line("."))
