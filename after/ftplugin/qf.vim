@@ -54,7 +54,7 @@ endfunction
 " if the qf/loc list has not yet been cached, or (for vim 8.1) if
 " it detects the qf/loc list has changed since it was last cached.
 "
-if v:version >= 801
+if (!has('nvim') && v:version >= 801) || has('nvim') 
     function! GetLatestQfLocList()
         if !exists('b:qftick')
             let b:qftick = -1
